@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{E53DEC14-73B8-A8A4-04D6-4E39C267A778}") = "PPA Tower Defense", "Assembly-CSharp.csproj", "{61001DE1-50E5-5168-C089-C534765ABA86}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61001DE1-50E5-5168-C089-C534765ABA86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61001DE1-50E5-5168-C089-C534765ABA86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61001DE1-50E5-5168-C089-C534765ABA86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61001DE1-50E5-5168-C089-C534765ABA86}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 22e5f825456432a448acafec4c79aec5
+timeCreated: 1466446289
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - Plane_test_enemy: {fileID: 151436, guid: 2fc391a7a81423c489f88ac35c7e115b, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
