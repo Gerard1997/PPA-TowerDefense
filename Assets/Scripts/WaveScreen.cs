@@ -9,7 +9,7 @@ public class WaveScreen : MonoBehaviour {
 	public GameObject floor;
 	public GameObject block;
 	private WaveScreenCamera waveCamera;
-	private Camera playCamera;
+	private GameCamera playCamera;
 	private PlayerControl playerControl;
 
 	public int towers;
@@ -23,7 +23,7 @@ public class WaveScreen : MonoBehaviour {
 		canvas = GameObject.Find("Pantalla Torretas").GetComponent<Canvas>();
 		menu = GameObject.Find("Pantalla Compras").GetComponent<Canvas>();
 		waveCamera = GetComponent<WaveScreenCamera>();
-		playCamera = GetComponent<Camera>();
+		playCamera = GetComponent<GameCamera>();
 		playerControl = GameObject.FindWithTag("PLAYER").GetComponent<PlayerControl>();
 	}
 

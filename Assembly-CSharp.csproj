@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{61001DE1-50E5-5168-C089-C534765ABA86}</ProjectGuid>
+    <ProjectGuid>{899A57E2-2B6D-B0A4-1F1F-56AC09E76090}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -45,15 +45,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Camera.cs" />
      <Compile Include="Assets\Scripts\Enemy\AI_.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyProfile.cs" />
+     <Compile Include="Assets\Scripts\Enemy\PathToPlayer.cs" />
+     <Compile Include="Assets\Scripts\GameCamera.cs" />
      <Compile Include="Assets\Scripts\MapStartUp\LoadMap.cs" />
      <Compile Include="Assets\Scripts\MapStartUp\PrintMap.cs" />
      <Compile Include="Assets\Scripts\PlaceTorret.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerProfile.cs" />
      <Compile Include="Assets\Scripts\Player\p_move.cs" />
      <Compile Include="Assets\Scripts\PlayerControl.cs" />
+     <Compile Include="Assets\Scripts\PruebaLibText.cs" />
      <Compile Include="Assets\Scripts\TowerAttack.cs" />
      <Compile Include="Assets\Scripts\TransformTurret.cs" />
      <Compile Include="Assets\Scripts\WaveScreen.cs" />

@@ -10,8 +10,7 @@ public class PlayerControl : MonoBehaviour {
 	private Vector2 pos;
 	private bool dirX;
 	private Vector3 currentPos;
-	private List<int> badX;
-	private List<int> badY;
+	private List <Vector2> badPos;
 	private PrintMap map;
 	private Vector2 tilePos;
 	private char[,] walls;
@@ -29,14 +28,11 @@ public class PlayerControl : MonoBehaviour {
 		map = GameObject.Find("Main Camera").GetComponent<PrintMap>();
 		width = map.width;
 		height = map.height;
-		badX = map.BadX;
-		badY = map.BadY;
+		badPos = map.badPositions;
 		tilePos = GetPosition();
 		walls = new char [100, 100] ;
-		int n = 0;
-		foreach(int badx in badX){
-			walls [badx,badY[n]] = 'p';
-			n++;
+		foreach(Vector2 bad in badPos){
+			walls [(int)bad.x,(int)bad.y] = 'p';
 		}
 	}
 	void Update (){
@@ -148,6 +144,11 @@ public class PlayerControl : MonoBehaviour {
 	public bool ValidMovement(Vector2 direction){
 		direction = new Vector2 (direction.x,-direction.y);
 		Vector2 tilePos = GetPosition() + direction;
+		/*for (int i = 0; i < badPos.Count ; i++){
+			if((int)badPos[i].x == (int)tilePos.x && (int)badPos[i].y == (int)tilePos.y)
+				return false;
+		}
+		return true;*/
 		return !(walls[(int)tilePos.x,(int)tilePos.y] == 'p');
 	}
 }

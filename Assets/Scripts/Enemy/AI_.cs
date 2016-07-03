@@ -1,41 +1,25 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 public class AI_ : MonoBehaviour {
-	[DllImport("Enemy_AI")]
-	public static extern int GetPathMovs (int[] badx, int[] bady, int nBad,
-										  int[] movsx,int[] movsy,
-										  int currX, int currY,
-										  int PlayerX,int PlayerY);
-	//Funcion encargada de encontrar el camino más cercano al enemigo
-	//Los primeros 2 parametros (Badx y Bady son las coordenadas 'x' y 'y' respectivamente
-	//de los lugares en donde se encuentran paredes, torres, obejtos que no puedan ser atravesados
-	//por el enemigo, el tercer parametro es simplemente la cantidad de estos objetos mencionados.
 
-	//El 4° y 5° parametro son arreglos en donde se almacenara el patron a seguir para 'x' y 'y'
-	//Los ultimos parametros son la posicion del enemigo y la del jugador respectivamente
-
-	private int[] MovsX;
-	private int[] MovsY;
+  private List<Vector2> movsxy;
+	private float blockSize = 0.5f;
 	private int movs = 0;
+
 	public float Speed;
-	public GameObject map;
 	private Vector2 nextTargetPos;
 	private int nextTarget = 0;
 	private bool endOfPath = false;
-
-	private float height;
-	private float width;
+  private Rigidbody2D rgbod;
 
 	// Use this for initialization
-
 	void Start () {
-		map = GameObject.Find("Main Camera");
-		height = map.GetComponent<PrintMap>().height;
-		width = map.GetComponent<PrintMap>().width;
+    rgbod = GetComponent<Rigidbody2D>();
 		SeekPlayer ();
-
+		//InvokeRepeating ("FollowPath", Speed, Speed);
 	}
 
 	// Update is called once per frame
@@ -46,30 +30,30 @@ public class AI_ : MonoBehaviour {
 	}
 
 	void SeekPlayer(){
-		Vector2 playerCoords = map.GetComponent<PrintMap> ().ply_.GetComponent<p_move> ().GetPosition ();
-		int p_x = (int)playerCoords.x;
-		int p_y = (int)playerCoords.y;
-				Debug.Log(map);
+//		Vector2 playerCoords = map.GetComponent<PrintMap> ().ply_.GetComponent<p_move> ().GetPosition ();
+//		int p_x = (int)playerCoords.x;
+//		int p_y = (int)playerCoords.y;
 
-		MovsX = new int[1000];
-		MovsY = new int[1000];
+		Vector2 currentPos = new Vector2 (Mathf.RoundToInt (transform.position.x / blockSize),
+										  Mathf.RoundToInt (-transform.position.y / blockSize));
 
-		movs =  GetPathMovs(map.GetComponent<PrintMap>().BadX.ToArray(), map.GetComponent<PrintMap>().BadY.ToArray(),
-				map.GetComponent<PrintMap>().BadX.Count,
-				MovsX, MovsY,
-				Mathf.RoundToInt(transform.position.x / width),
-				Mathf.RoundToInt(-transform.position.y / height),
-				p_x, p_y);
+
+        movsxy = new List<Vector2>();
+
+        movsxy = GameObject.Find("Main Camera").GetComponent<PathToPlayer>().GetPathToPlayer(currentPos);
 
 		nextTarget = 0;
-		//Probablemente no necesario, pero no hay que arriesgar xD
-		if (movs > 1) {
-			nextTargetPos = new Vector2 ((float)MovsX [1], -(float)MovsY [1]);
-			endOfPath = false;
-		} else {
-			endOfPath = true;
-		}
-	}
+        //Probablemente no necesario, pero no hay que arriesgar xD
+        if (movsxy.Count > 1) {
+            nextTargetPos = new Vector2 ((float)movsxy[1].x, -(float)movsxy[1].y);
+            endOfPath = false;
+        } else {
+            endOfPath = true;
+        }
+
+        movs = movsxy.Count - 1;
+
+    }
 
 	void OnTriggerEnter2D(Collider2D obj){
 		if (obj.gameObject.tag == "PLAYER") {
@@ -80,8 +64,8 @@ public class AI_ : MonoBehaviour {
 
 	Vector2 GetPosition(){
 		Vector2 position;
-		position.x = Mathf.RoundToInt(transform.position.x / width);
-		position.y = Mathf.RoundToInt(transform.position.y / height);
+		position.x = Mathf.RoundToInt(transform.position.x / 0.5f);
+		position.y = Mathf.RoundToInt(transform.position.y / 0.5f);
 		return position;
 	}
 
@@ -94,12 +78,10 @@ public class AI_ : MonoBehaviour {
 
 		float relativeSpeed = Speed * Time.deltaTime;
 
-		//0.32f tamaño en pixeles de la imagen (32x32);
-
-		if ((transform.position.x < nextTargetPos.x * width + relativeSpeed*width &&
-			transform.position.x > nextTargetPos.x * width - relativeSpeed*width) &&
-			(transform.position.y <  nextTargetPos.y * width + relativeSpeed*width &&
-			transform.position.y > nextTargetPos.y * width - relativeSpeed*width)) {
+		if ((transform.position.x < nextTargetPos.x * .5f + relativeSpeed*0.5f &&
+			transform.position.x > nextTargetPos.x * .5f - relativeSpeed*0.5f) &&
+			(transform.position.y <  nextTargetPos.y * .5f + relativeSpeed*0.5f &&
+			transform.position.y > nextTargetPos.y * .5f - relativeSpeed*0.5f)) {
 
 			nextTarget++;
 
@@ -108,11 +90,11 @@ public class AI_ : MonoBehaviour {
 				return;
 			}
 
-			nextTargetPos = new Vector2 (MovsX [nextTarget], -MovsY [nextTarget]);
+			nextTargetPos = new Vector2 (movsxy [nextTarget].x, -movsxy[nextTarget].y);
 		}
 
-		transform.position = Vector2.MoveTowards (transform.position, nextTargetPos * width, relativeSpeed);
-	//	transform.position = new Vector3(transform.position.x,transform.position.y,-1);
+		rgbod.position = Vector2.MoveTowards (transform.position, nextTargetPos * 0.5f, relativeSpeed);
+
 	}
 
 

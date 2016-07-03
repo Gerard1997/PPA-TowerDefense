@@ -22,6 +22,7 @@ public class TransformTurret : MonoBehaviour {
 		if (!wave.GetComponent<WaveScreen>().onPlay && !wave.GetComponent<PlaceTorret>().onUI){
 			if (Input.touchCount == 1 ){
 				touchingTimeAccum += Time.deltaTime;
+				Debug.Log(touchingTimeAccum);
 				if (touchingTimeAccum > touchingTime){
 					canvas.enabled = true;
 					wave.GetComponent<PlaceTorret>().enterUI();
