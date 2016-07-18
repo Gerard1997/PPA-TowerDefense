@@ -1,14 +1,10 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 public class PathToPlayer : MonoBehaviour {
-
-    private static char [,]walls;
-    private static List <Vector2> badPos;
-    private static PrintMap map;
 
     public const int WORLD_SIZE = 70;
 
@@ -65,12 +61,13 @@ public class PathToPlayer : MonoBehaviour {
             scPtr_visitedList = new List<SearchCell>();
             v2_pathToGoal = new List<Vector2i>();
 
-            map = GameObject.Find("Main Camera").GetComponent<PrintMap>();
-            badPos = map.badPositions;
-            walls = new char [100, 100] ;
-            foreach(Vector2 bad in badPos){
-              walls [(int)bad.x,(int)bad.y] = 'p';
-            }
+            //walls = new char [100, 100] ;
+            //for (int i = 0; i < 100; i++)
+            //    for (int j = 0; j < 100; j++)
+            //        walls[i, j] = 'n';
+            //foreach(Vector2 bad in badPos){
+            //  walls [(int)bad.x,(int)bad.y] = 'p';
+            //}
         }
 	    ~PathFinding(){}
 
@@ -143,9 +140,9 @@ public class PathToPlayer : MonoBehaviour {
 
         private void SetStartAndGoal(SearchCell start, SearchCell goal)
         {
-            SearchCell empty = new SearchCell();
-            empty.m_xcoord = -9999;
-            scPtr_startCell = new SearchCell(start.m_xcoord, start.m_ycoord, empty);
+            SearchCell nullSc = new SearchCell();
+            nullSc.m_xcoord = -9999;
+            scPtr_startCell = new SearchCell(start.m_xcoord, start.m_ycoord, nullSc);
             scPtr_goalCell = new SearchCell(goal.m_xcoord, goal.m_ycoord, goal);
 
             scPtr_startCell.G = 0;
@@ -156,22 +153,11 @@ public class PathToPlayer : MonoBehaviour {
         }
         private void PathOpened(int x, int y, int newCost, SearchCell parent)
         {
-            //for (auto& pos : badPositions){
-            //    if (pos.x == x && pos.y == y){
-            //        return;
-            //    }
-            //}
-
-            /*for (int i = 0; i < GameObject.Find("Main Camera").GetComponent<PrintMap>().badPositions.Count; i++)
-            {
-                if ((int)GameObject.Find("Main Camera").GetComponent<PrintMap>().badPositions[i].x == x &&
-                    (int)GameObject.Find("Main Camera").GetComponent<PrintMap>().badPositions[i].y == y)
-                {
-                    return;
-                }
-            }*/
-            if ((walls[x,y] == 'p')){return;};
-
+           // Debug.Log(x+","+y);
+            if (x < 0 || y < 0) return;
+            if (x >= GameObject.Find("Main Camera").GetComponent<LoadMap>().m_cols ||
+               y >= GameObject.Find("Main Camera").GetComponent<LoadMap>().m_rows) return;
+            if (GameObject.Find("Main Camera").GetComponent<LoadMap>().Grid[y][x] == 'b') return;
 
 	        int id = y * WORLD_SIZE + x;
 
@@ -273,8 +259,8 @@ public class PathToPlayer : MonoBehaviour {
 
     // Use this for initialization
 	void Start () {
-
-	}
+ 
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -285,7 +271,7 @@ public class PathToPlayer : MonoBehaviour {
 
         Vector2i currentP = new Vector2i((int)currentPosition.x, (int)currentPosition.y);
 
-        List<Vector2> empty = new List<Vector2>();
+        List<Vector2> pathCoords = new List<Vector2>();
 
         PathFinding _ptp = new PathFinding();
         _ptp.m_initializedStartGoal = false;
@@ -299,7 +285,7 @@ public class PathToPlayer : MonoBehaviour {
         {
             _ptp.FindPath(currentP, playerPos);
             if (maxtries++ > 300)
-                return empty;
+                return pathCoords;
         }
 
         int lastIndex = _ptp.v2_pathToGoal.Count - 1;
@@ -311,11 +297,48 @@ public class PathToPlayer : MonoBehaviour {
             Vector2 aux = new Vector2();
             aux.x = _ptp.v2_pathToGoal[i].x;
             aux.y = _ptp.v2_pathToGoal[i].y;
-            empty.Add(aux);
+            pathCoords.Add(aux);
         }
 
 
-        return empty;
+        return pathCoords;
 	}
 
+    public List<Vector2> GetPathToPlayer(Vector2 currentPosition,Vector2 targetPosition)
+    {
+
+        Vector2i currentP = new Vector2i((int)currentPosition.x, (int)currentPosition.y);
+
+        List<Vector2> pathCoords = new List<Vector2>();
+
+        PathFinding _ptp = new PathFinding();
+        _ptp.m_initializedStartGoal = false;
+        _ptp.m_foundGoal = false;
+
+        Vector2i targetPos = new Vector2i((int)targetPosition.x,
+                                          (int)targetPosition.y);
+
+        int maxtries = 0;
+        while (!_ptp.m_foundGoal)
+        {
+            _ptp.FindPath(currentP, targetPos);
+            if (maxtries++ > 300)
+                return pathCoords;
+        }
+
+        int lastIndex = _ptp.v2_pathToGoal.Count - 1;
+
+
+
+        for (int i = lastIndex; i >= 0; --i)
+        {
+            Vector2 aux = new Vector2();
+            aux.x = _ptp.v2_pathToGoal[i].x;
+            aux.y = _ptp.v2_pathToGoal[i].y;
+            pathCoords.Add(aux);
+        }
+
+
+        return pathCoords;
+    }
 }
