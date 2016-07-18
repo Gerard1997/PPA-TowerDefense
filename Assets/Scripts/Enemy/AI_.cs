@@ -8,7 +8,7 @@ public class AI_ : MonoBehaviour {
   private List<Vector2> movsxy;
 	private float blockSize = 0.5f;
 	private int movs = 0;
-
+    public bool randomState;
 	public float Speed;
 	private Vector2 nextTargetPos;
 	private int nextTarget = 0;
@@ -17,9 +17,9 @@ public class AI_ : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    rgbod = GetComponent<Rigidbody2D>();
-		SeekPlayer ();
-		//InvokeRepeating ("FollowPath", Speed, Speed);
+        rgbod = GetComponent<Rigidbody2D>();
+        SeekPlayer();
+        randomState = true;
 	}
 
 	// Update is called once per frame
@@ -37,10 +37,27 @@ public class AI_ : MonoBehaviour {
 		Vector2 currentPos = new Vector2 (Mathf.RoundToInt (transform.position.x / blockSize),
 										  Mathf.RoundToInt (-transform.position.y / blockSize));
 
-
         movsxy = new List<Vector2>();
 
-        movsxy = GameObject.Find("Main Camera").GetComponent<PathToPlayer>().GetPathToPlayer(currentPos);
+        float desition = Random.Range(0, 10);
+
+        if(desition <= 5 || !randomState) {
+            movsxy = GameObject.Find("Main Camera").GetComponent<PathToPlayer>().GetPathToPlayer(currentPos);
+        }
+        else {
+            int tx = (int)(Random.Range(0, GameObject.Find("Main Camera").GetComponent<LoadMap>().m_cols));
+            int ty = (int)(Random.Range(0, GameObject.Find("Main Camera").GetComponent<LoadMap>().m_rows));
+            if (GameObject.Find("Main Camera").GetComponent<LoadMap>().Grid[ty][tx] == 'b')
+            {
+                endOfPath = true;
+                return;
+            }
+            else
+            {
+                Vector2 targetPos = new Vector2(tx, ty);
+                movsxy = GameObject.Find("Main Camera").GetComponent<PathToPlayer>().GetPathToPlayer(currentPos, targetPos);
+            }
+        }    
 
 		nextTarget = 0;
         //Probablemente no necesario, pero no hay que arriesgar xD
@@ -85,7 +102,7 @@ public class AI_ : MonoBehaviour {
 
 			nextTarget++;
 
-			if (nextTarget == movs) {
+			if (nextTarget >= movs) {
 				endOfPath = true;
 				return;
 			}
